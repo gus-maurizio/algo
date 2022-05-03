@@ -1,5 +1,5 @@
 from collections import namedtuple
-import random
+import random,sys
 
 doc_knights = '''
 Algorithms to analyze chess knights moves
@@ -24,6 +24,11 @@ class ChessBoard:
             for row in range(self.size):
                 print(f'{self.board[col][row]:3d} |', end='')
         print('\n+' + '----+' * self.size)
+
+    def printMoves(self):
+        for m in self.moves:
+            print(f' [{m.label}]: ({m.x},{m.y})',end=' -> ')
+        print('done!')
 
     def history(self):
         print(f'Move history: {self.moves}')
@@ -74,10 +79,12 @@ class ChessBoard:
         return self.isCovered()
 
 
-board = ChessBoard(6)
+board = ChessBoard(int(sys.argv[1]) if len(sys.argv) > 1 else 6)
 board.reset()
-board.print()
-print(board.possible(0,0))
 
-print(board.canCoverHeuristic(0,0))
+cancover = board.canCoverHeuristic(0,0)
+print(f'The board ({board.size}x{board.size}) can be covered: {cancover}')
 board.print()
+print(len(board.moves), 'moves attempted')
+if cancover:
+    board.printMoves()
