@@ -82,7 +82,7 @@ class ChessBoard:
 board = ChessBoard(int(sys.argv[1]) if len(sys.argv) > 1 else 6)
 board.reset()
 
-cancover = board.canCoverHeuristic(0,0)
+cancover = board.canCoverHeuristic(int(sys.argv[2]) if len(sys.argv) > 2 else 0,int(sys.argv[3]) if len(sys.argv) > 3 else 0)
 print(f'The board ({board.size}x{board.size}) can be covered: {cancover}')
 board.print()
 print(len(board.moves), 'moves attempted')
