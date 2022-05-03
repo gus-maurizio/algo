@@ -103,6 +103,6 @@ if cancover:
 solutions = 0
 print("\nAttempting to find solutions to friendly queens...")
 for i in board.queens():
-    print(f'{solutions:3d} {i} each column indicates row position for that column')
+    print(f'{solutions:3d} {i} each column indicates row position for that column') if solutions < 20 else None
     solutions += 1
-print(f'Board of {board.size:d}x{board.size:d} has {solutions} solutions')
+print(f'Board of {board.size:d}x{board.size:d} has {solutions:,d} solutions')
