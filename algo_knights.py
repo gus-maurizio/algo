@@ -1,5 +1,5 @@
 from collections import namedtuple
-import random,sys
+import random
 
 doc_knights = '''
 Algorithms to analyze chess knights moves
@@ -24,11 +24,6 @@ class ChessBoard:
             for row in range(self.size):
                 print(f'{self.board[col][row]:3d} |', end='')
         print('\n+' + '----+' * self.size)
-
-    def printMoves(self):
-        for m in self.moves:
-            print(f' [{m.label}]: ({m.x},{m.y})',end=' -> ')
-        print('done!')
 
     def history(self):
         print(f'Move history: {self.moves}')
@@ -78,31 +73,11 @@ class ChessBoard:
                     continue      
         return self.isCovered()
 
-    def queens(self,i=0,p=[],q=set(),u=set(),v=set()):
-        '''
-        basically finds all permutations (stored in a vector/list where each position represents a column and the number the row the queen is in)
-        but filters each member for not being in identified upwards/downwards diagonals.
-        '''
-        if i < self.size:
-            for j in range(self.size):
-                if j not in q and i+j not in u and i-j not in v:
-                    yield from self.queens(i+1,p+[j],q | {j},u | {i+j},v | {i-j})
-        else:
-            yield p
 
-board = ChessBoard(int(sys.argv[1]) if len(sys.argv) > 1 else 6)
+board = ChessBoard(6)
 board.reset()
-
-cancover = board.canCoverHeuristic(int(sys.argv[2]) if len(sys.argv) > 2 else 0,int(sys.argv[3]) if len(sys.argv) > 3 else 0)
-print(f'The board ({board.size}x{board.size}) can be covered: {cancover}')
 board.print()
-print(len(board.moves), 'moves attempted')
-if cancover:
-    board.printMoves()
+print(board.possible(0,0))
 
-solutions = 0
-print("\nAttempting to find solutions to friendly queens...")
-for i in board.queens():
-    print(f'{solutions:3d} {i} each column indicates row position for that column') if solutions < 20 else None
-    solutions += 1
-print(f'Board of {board.size:d}x{board.size:d} has {solutions:,d} solutions')
+print(board.canCoverHeuristic(0,0))
+board.print()
