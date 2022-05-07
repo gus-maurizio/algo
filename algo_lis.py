@@ -1,4 +1,5 @@
-import random
+import random,sys
+
 doc_lis='''
 longest increasing subsequence of a set of numbers
 '''
@@ -58,7 +59,6 @@ def getLisOpt2(a):
     # and we keep the lists ordered by length
 
     def cleanup(N,cMax,cVal,loop):
-        # print('>>>',N,cMax,cVal)
         # first sort based on length of cVal
         for i in range(1,N):
             j = i
@@ -74,11 +74,9 @@ def getLisOpt2(a):
             loop += 1
             if i < N-1 and len(cVal[i]) == len(cVal[i+1]):
                 todel += [i+1] if cMax[i] <= cMax[i+1] else [i]
-        # print('---',len(cMax),cMax,cVal,todel)
         for i in todel:
             del cMax[i]
             del cVal[i]
-        # print('<<<',len(cMax),cMax,cVal,todel)
         return cMax[0],cMax[-1],len(cMax),loop
 
     loop = 1
@@ -92,7 +90,6 @@ def getLisOpt2(a):
     candidatesMax.append(a[0])
     candidatesVal.append([a[0]])
     for i in range(1,len(a)):       # loop over 2nd element on
-        # print('----',loop,smax,smin,i,a[i],candidatesMax,candidatesVal,candidatesN)
         # think a stream of values, and process elements as they come O(n)
         if   a[i] >= smax:
             # a larger value than anything seen will add to the first (largest) and 
@@ -107,7 +104,6 @@ def getLisOpt2(a):
         elif a[i] < smin:
             # a smaller value than anything seen opens a new possibility!
             # check if it can replace the previous smaller
-            # print('::::',loop,i,a[i],candidatesMax,candidatesVal,candidatesN)
             if len(candidatesVal[-1]) == 1:
                 candidatesMax[-1] = a[i]
                 candidatesVal[-1] = [a[i]]
@@ -121,9 +117,7 @@ def getLisOpt2(a):
         elif a[i] < smax and a[i] >= smin:
             # this is where it gets interesting! it does not fit in the largest, but can
             # bump any of the others to become larger and potentially more inclusive, knocking down the largest!
-            # print('::::',loop,i,a[i],smax,smin,candidatesN,candidatesMax,candidatesVal)
             for j in range(1,candidatesN):
-                # print(':j:',j)
                 # is this larger or equal the largest value? find the first that matches
                 if a[i] >= candidatesMax[j]:
                     candidatesMax[j]  = a[i]
@@ -143,9 +137,11 @@ def getLisOpt2(a):
 
 
 # P = [10,11, 4, 3, 5,6,21, 1, 50, 41, 60, 80]
-P = [random.randint(100,3000) for _ in range(5000)]
 # P = [10,20,2,3,4,0,40,4,50,5]
 # P = [1384, 1734, 2520, 2452, 1374, 1501, 2582, 106, 1168, 2377, 1962, 995, 198, 2858, 268, 643, 1856, 1965, 2202, 2742, 2915, 2454, 1804, 416, 2637, 2227]
 # print(P)
-print(getLis(P))
+N = int(sys.argv[1]) if len(sys.argv) > 1 else 500
+P = [random.randint(100,max(3000,N)) for _ in range(N)]
+# print(getLis(P))
+print(getLisOpt(P))
 print(getLisOpt2(P))
