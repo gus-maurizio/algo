@@ -1,3 +1,9 @@
+'''
+docker pull hivemq/hivemq4
+docker run -it --rm --name hivemq -p 8080:8080 -p 1883:1883 hivemq/hivemq4
+open http://localhost:8080
+'''
+
 import paho.mqtt.client as mqtt #import the client1
 import time
 ############
