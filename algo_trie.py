@@ -33,6 +33,26 @@ class TrieNode:
                 pass
             self.children[idx].collapse()
 
+    def find(self,what):
+        answer = []
+        n = len(what)
+        i = 1
+        found  = True
+        branch = self 
+        while i <= n and found:
+            # print(f'looking {i} {branch.prefix}',end=' ')
+            found = False
+            for child in branch.children:
+                if child.prefix == what[0:i]:
+                    print(f'{child.prefix}', end=' -> ')
+                    answer = child.topn
+                    found  = True
+                    branch = child
+                    break
+            i += 1
+        print()
+        return answer 
+
     def topValue(self,k=5):
         # get all leaf nodes and sort them by value
         collect = []
@@ -58222,3 +58242,10 @@ for k in sortedResults.keys():
 trie.collapse()
 trie.topValue()
 trie.printTrie()
+
+new_name = ''
+while new_name != 'quit':
+    # Ask the user for a name.
+    new_name = input("Please start typing, or enter 'quit': ")
+    answer   = trie.find(new_name)
+    print(answer)
