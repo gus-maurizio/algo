@@ -31,7 +31,7 @@ def knap0(W,weights,values,n):
         return knap0(W,weights,values, n-1)
     else:
         return max(values[n-1] + knap0(W-weights[n-1],weights,values,n-1),
-                    knap0(W,weights,values,n-1))
+                                 knap0(W,             weights,values,n-1))
 
 def knap0memo(W,weights,values,n,memo={}):
     '''
