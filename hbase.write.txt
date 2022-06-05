@@ -31,9 +31,9 @@ aws s3 rm --recursive s3://snp144-hbase-log/
 aws s3 rm --recursive s3://snp144-hbase/
 aws s3 cp hbase.sh s3://snp144-hbase-log/hbase.sh
 aws s3 ls s3://snp144-hbase-log   
+aws s3 ls --recursive s3://snp144-hbase-log  
 
-
-aws ssm start-session --target i-09cbd6af389e9f7d4
+aws ssm start-session --target i-0c9af79c6375aa50c
 
 --instance-count 1 --instance-type m6g.2xlarge \
 
