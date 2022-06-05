@@ -1,0 +1,183 @@
+{
+    "Cluster": {
+        "Id": "j-2E4M7OBHD1ENW",
+        "Name": "My cluster",
+        "Status": {
+            "State": "STARTING",
+            "StateChangeReason": {
+                "Message": "Configuring cluster software"
+            },
+            "Timeline": {
+                "CreationDateTime": "2022-06-04T14:08:10.897000-04:00"
+            }
+        },
+        "Ec2InstanceAttributes": {
+            "Ec2SubnetId": "subnet-4dc0e912",
+            "RequestedEc2SubnetIds": [
+                "subnet-4dc0e912"
+            ],
+            "Ec2AvailabilityZone": "us-east-1a",
+            "RequestedEc2AvailabilityZones": [],
+            "IamInstanceProfile": "snp144-emr-ec2",
+            "EmrManagedMasterSecurityGroup": "sg-006c05b230ac81efb",
+            "EmrManagedSlaveSecurityGroup": "sg-030f16b0b2c2f7864",
+            "AdditionalMasterSecurityGroups": [],
+            "AdditionalSlaveSecurityGroups": []
+        },
+        "InstanceCollectionType": "INSTANCE_GROUP",
+        "LogUri": "s3n://snp144-hbase-log/",
+        "ReleaseLabel": "emr-6.6.0",
+        "AutoTerminate": false,
+        "TerminationProtected": false,
+        "VisibleToAllUsers": true,
+        "Applications": [
+            {
+                "Name": "Hadoop",
+                "Version": "3.2.1"
+            },
+            {
+                "Name": "HBase",
+                "Version": "2.4.4"
+            },
+            {
+                "Name": "Ganglia",
+                "Version": "3.7.2"
+            },
+            {
+                "Name": "ZooKeeper",
+                "Version": "3.5.7"
+            }
+        ],
+        "Tags": [],
+        "ServiceRole": "EMR_DefaultRole",
+        "NormalizedInstanceHours": 0,
+        "MasterPublicDnsName": "ec2-18-232-134-92.compute-1.amazonaws.com",
+        "Configurations": [
+            {
+                "Classification": "emrfs-site",
+                "Properties": {
+                    "fs.s3.consistent": "true",
+                    "fs.s3.consistent.metadata.tableName": "EmrFSMetadata",
+                    "fs.s3.consistent.retryCount": "5",
+                    "fs.s3.consistent.retryPeriodSeconds": "10"
+                }
+            },
+            {
+                "Classification": "hbase",
+                "Properties": {
+                    "hbase.emr.storageMode": "s3"
+                }
+            },
+            {
+                "Classification": "hbase-site",
+                "Properties": {
+                    "hbase.rootdir": "s3://snp144-hbase/"
+                }
+            }
+        ],
+        "AutoScalingRole": "EMR_AutoScaling_DefaultRole",
+        "ScaleDownBehavior": "TERMINATE_AT_TASK_COMPLETION",
+        "EbsRootVolumeSize": 30,
+        "KerberosAttributes": {},
+        "ClusterArn": "arn:aws:elasticmapreduce:us-east-1:422998949984:cluster/j-2E4M7OBHD1ENW",
+        "StepConcurrencyLevel": 1,
+        "PlacementGroups": [],
+        "BootstrapActions": [
+            {
+                "Name": "Custom action",
+                "ScriptPath": "s3://snp144-hbase-log/snp144-hbase.sh",
+                "Args": []
+            }
+        ],
+        "InstanceGroups": [
+            {
+                "Id": "ig-K4DYSMVB6EXY",
+                "Name": "Core - 2",
+                "Market": "ON_DEMAND",
+                "InstanceGroupType": "CORE",
+                "InstanceType": "m6g.xlarge",
+                "RequestedInstanceCount": 2,
+                "RunningInstanceCount": 0,
+                "Status": {
+                    "State": "PROVISIONING",
+                    "StateChangeReason": {
+                        "Message": ""
+                    },
+                    "Timeline": {
+                        "CreationDateTime": "2022-06-04T14:08:11.029000-04:00"
+                    }
+                },
+                "Configurations": [],
+                "ConfigurationsVersion": 0,
+                "EbsBlockDevices": [
+                    {
+                        "VolumeSpecification": {
+                            "VolumeType": "gp2",
+                            "SizeInGB": 32
+                        },
+                        "Device": "/dev/sdb"
+                    },
+                    {
+                        "VolumeSpecification": {
+                            "VolumeType": "gp2",
+                            "SizeInGB": 32
+                        },
+                        "Device": "/dev/sdc"
+                    }
+                ],
+                "ShrinkPolicy": {}
+            },
+            {
+                "Id": "ig-22Z5EMV7YGOXR",
+                "Name": "Master - 1",
+                "Market": "ON_DEMAND",
+                "InstanceGroupType": "MASTER",
+                "InstanceType": "m6g.2xlarge",
+                "RequestedInstanceCount": 1,
+                "RunningInstanceCount": 0,
+                "Status": {
+                    "State": "BOOTSTRAPPING",
+                    "StateChangeReason": {
+                        "Message": ""
+                    },
+                    "Timeline": {
+                        "CreationDateTime": "2022-06-04T14:08:11.029000-04:00"
+                    }
+                },
+                "Configurations": [],
+                "ConfigurationsVersion": 0,
+                "EbsBlockDevices": [
+                    {
+                        "VolumeSpecification": {
+                            "VolumeType": "gp2",
+                            "SizeInGB": 32
+                        },
+                        "Device": "/dev/sdb"
+                    },
+                    {
+                        "VolumeSpecification": {
+                            "VolumeType": "gp2",
+                            "SizeInGB": 32
+                        },
+                        "Device": "/dev/sdc"
+                    },
+                    {
+                        "VolumeSpecification": {
+                            "VolumeType": "gp2",
+                            "SizeInGB": 32
+                        },
+                        "Device": "/dev/sdd"
+                    },
+                    {
+                        "VolumeSpecification": {
+                            "VolumeType": "gp2",
+                            "SizeInGB": 32
+                        },
+                        "Device": "/dev/sde"
+                    }
+                ],
+                "ShrinkPolicy": {}
+            }
+        ]
+    }
+}
