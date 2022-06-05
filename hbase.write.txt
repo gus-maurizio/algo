@@ -27,19 +27,25 @@ aws emr create-cluster \
 --configurations '[{"Classification":"emrfs-site","Properties":{"fs.s3.consistent.retryPeriodSeconds":"1","fs.s3.consistent":"true","fs.s3.consistent.retryCount":"5","fs.s3.consistent.metadata.tableName":"YOUR_CONSISTENT_VIEW_TABLE_NAME"},"Configurations":[]},{"Classification":"hbase","Properties":{"hbase.emr.storageMode":"s3","hbase.emr.readreplica.enabled":"true"},"Configurations":[]},{"Classification":"hbase-site","Properties":{"hbase.rootdir":"s3:///"},"Configurations":[]}]' \
 --service-role EMR_DefaultRole --name 'HBase Read Replica'
 
+aws s3 rm --recursive s3://snp144-hbase-log/
+aws s3 rm --recursive s3://snp144-hbase/
+aws s3 cp hbase.sh s3://snp144-hbase-log/hbase.sh
+aws s3 ls s3://snp144-hbase-log   
 
-  
-aws ssm start-session --target i-037bfff8998aea606
 
+aws ssm start-session --target i-09cbd6af389e9f7d4
+
+--instance-count 1 --instance-type m6g.2xlarge \
 
 create 'test', 'cf'
 
 aws emr create-cluster --name "HBASE Master" \
---applications Name=HBase --release-label emr-5.35.0 \
---instance-count 1 --instance-type m5.xlarge \
+--applications Name=HBase --release-label emr-6.6.0 \
+--instance-groups '[{"InstanceCount":1,"InstanceGroupType":"MASTER","InstanceType":"m6g.2xlarge","Name":"Master - 1"},{"InstanceCount":2,"InstanceGroupType":"CORE","InstanceType":"m6g.xlarge","Name":"Core - 2"}]' \
 --service-role EMR_DefaultRole \
---log-uri s3n://snp144-hbase-log/ \
+--log-uri 's3n://snp144-hbase-log/' \
 --no-termination-protected --no-auto-terminate \
---configurations '[{"Classification":"hbase","Properties":{"hbase.emr.storageMode":"s3"}},{"Classification":"hbase-site","Properties":{"hbase.rootdir":"s3://snp144-hbase/"}}]' \
+--configurations '[{"Classification":"emrfs-site","Properties":{"fs.s3.consistent":"true","fs.s3.consistent.metadata.tableName":"EmrFSMetadata","fs.s3.consistent.retryCount":"5","fs.s3.consistent.retryPeriodSeconds":"10"}},{"Classification":"hbase","Properties":{"hbase.emr.storageMode":"s3"}},{"Classification":"hbase-site","Properties":{"hbase.rootdir":"s3://snp144-hbase/"}}]' \
 --ec2-attributes 'InstanceProfile=snp144-emr-ec2' \
---bootstrap-actions 'Name=custom,Path=s3://snp144-hbase-log/hbase.sh'
+--bootstrap-actions 'Path=s3://snp144-hbase-log/hbase.sh'
+

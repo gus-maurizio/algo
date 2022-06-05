@@ -1,0 +1,24 @@
+{"Configurations": [
+    {
+        "Classification": "emrfs-site",
+        "Properties": {
+            "fs.s3.consistent": "true",
+            "fs.s3.consistent.metadata.tableName": "EmrFSMetadata",
+            "fs.s3.consistent.retryCount": "5",
+            "fs.s3.consistent.retryPeriodSeconds": "10"
+        }
+    },
+    {
+        "Classification": "hbase",
+        "Properties": {
+            "hbase.emr.storageMode": "s3"
+        }
+    },
+    {
+        "Classification": "hbase-site",
+        "Properties": {
+            "hbase.rootdir": "s3://snp144-hbase/"
+        }
+    }
+]
+}
