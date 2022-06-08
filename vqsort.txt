@@ -1,0 +1,114 @@
+
+https://github.com/google/highway/commit/a85f71850e0e9c29dd5a6152ed60e3a95e951e25?diff=unified&short_path=8be67a0#diff-8be67a0e47c7182c7c71b98115cd670ef232818647dca1950e4b4422cd3bf78f
+
+go install github.com/bazelbuild/bazelisk@latest
+git clone https://github.com/google/highway
+cd highway
+CC=clang CXX=clang++ ~/go/bin/bazelisk build -c opt hwy/contrib/sort:all
+CC=clang ~/go/bin/bazelisk build -c opt  hwy/contrib/sort:all       
+bazel-bin/hwy/contrib/sort/sort_test
+bazel-bin/hwy/contrib/sort/bench_sort
+
+AWS Graviton3
+
+Instance config: amazon linux 5.10 arm64, c7g.8xlarge (largest allowed config is 32 vCPU). Initial launch will fail. Wait a few minutes for an email saying the config is verified, then re-launch. See IPv4 hostname in list of instances.
+
+ssh -i /path/key.pem ec2-user@hostname
+
+sudo yum install go
+sudo yum install clang.aarch64
+sudo yum install glibc-static.aarch64
+go install github.com/bazelbuild/bazelisk@latest
+git clone https://github.com/google/highway
+cd highway
+CC=clang ~/go/bin/bazelisk build -c opt --copt=-march=armv8.2-a+sve hwy/contrib/sort:all
+bazel-bin/hwy/contrib/sort/sort_test
+bazel-bin/hwy/contrib/sort/bench_sort
+
+graviton 2
+CC=clang ~/go/bin/bazelisk build -c opt --copt=-march=armv8.2a hwy/contrib/sort:all
+
+gustavomaurizio@iMacM1 highway % bazel-bin/hwy/contrib/sort/bench_sort                                   
+Running main() from gmock_main.cc
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from BenchSortGroup/BenchSort
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllPartition/Neon
+      Neon:           vq:     f32:  uniform8: 5.24E+05 17847 MB/s ( 1 threads)
+      Neon:           vq:     i64:  uniform8: 5.24E+05 10263 MB/s ( 1 threads)
+      Neon:           vq:    u128:  uniform8: 5.24E+05 6935 MB/s ( 1 threads)
+[       OK ] BenchSortGroup/BenchSort.BenchAllPartition/Neon (2779 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllPartition/Emu128
+[       OK ] BenchSortGroup/BenchSort.BenchAllPartition/Emu128 (0 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllBase/Neon
+      Neon:           vq:     f32: uniform32: 9.60E+03 4163 MB/s ( 1 threads)
+      Neon:           vq:     i64: uniform32: 4.80E+03 5689 MB/s ( 1 threads)
+      Neon:           vq:    u128: uniform32: 4.80E+03 4735 MB/s ( 1 threads)
+[       OK ] BenchSortGroup/BenchSort.BenchAllBase/Neon (1 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllBase/Emu128
+[       OK ] BenchSortGroup/BenchSort.BenchAllBase/Emu128 (0 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllSort/Neon
+      Neon:          std:     f32: uniform32: 2.50E+05   66 MB/s ( 1 threads)
+      Neon:         heap:     f32: uniform32: 2.50E+05   12 MB/s ( 1 threads)
+      Neon:           vq:     f32: uniform32: 2.50E+05  536 MB/s ( 1 threads)
+      Neon:          std:     i32: uniform32: 2.50E+05   83 MB/s ( 1 threads)
+      Neon:         heap:     i32: uniform32: 2.50E+05   14 MB/s ( 1 threads)
+      Neon:           vq:     i32: uniform32: 2.50E+05  522 MB/s ( 1 threads)
+      Neon:          std:     i64: uniform32: 2.50E+05  164 MB/s ( 1 threads)
+      Neon:         heap:     i64: uniform32: 2.50E+05   32 MB/s ( 1 threads)
+      Neon:           vq:     i64: uniform32: 2.50E+05  489 MB/s ( 1 threads)
+      Neon:          std:    u128: uniform32: 2.50E+05  163 MB/s ( 1 threads)
+      Neon:         heap:    u128: uniform32: 2.50E+05   32 MB/s ( 1 threads)
+      Neon:           vq:    u128: uniform32: 2.50E+05  502 MB/s ( 1 threads)
+[       OK ] BenchSortGroup/BenchSort.BenchAllSort/Neon (10590 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllSort/Emu128
+[       OK ] BenchSortGroup/BenchSort.BenchAllSort/Emu128 (0 ms)
+[----------] 6 tests from BenchSortGroup/BenchSort (13370 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (13370 ms total)
+[  PASSED  ] 6 tests.
+gustavomaurizio@iMacM1 highway % 
+
+
+[root@ip-172-31-84-212 highway]# bazel-bin/hwy/contrib/sort/bench_sort
+Running main() from gmock_main.cc
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from BenchSortGroup/BenchSort
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllPartition/Neon
+      Neon:           vq:     f32:  uniform8: 5.24E+05 5330 MB/s ( 1 threads)
+      Neon:           vq:     i64:  uniform8: 5.24E+05 5049 MB/s ( 1 threads)
+      Neon:           vq:    u128:  uniform8: 5.24E+05 3596 MB/s ( 1 threads)
+[       OK ] BenchSortGroup/BenchSort.BenchAllPartition/Neon (6712 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllPartition/Emu128
+[       OK ] BenchSortGroup/BenchSort.BenchAllPartition/Emu128 (0 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllBase/Neon
+      Neon:           vq:     f32: uniform32: 9.60E+03 1530 MB/s ( 1 threads)
+      Neon:           vq:     i64: uniform32: 4.80E+03 1772 MB/s ( 1 threads)
+      Neon:           vq:    u128: uniform32: 4.80E+03 1640 MB/s ( 1 threads)
+[       OK ] BenchSortGroup/BenchSort.BenchAllBase/Neon (2 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllBase/Emu128
+[       OK ] BenchSortGroup/BenchSort.BenchAllBase/Emu128 (0 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllSort/Neon
+      Neon:          std:     f32: uniform32: 2.50E+05   55 MB/s ( 1 threads)
+      Neon:         heap:     f32: uniform32: 2.50E+05   11 MB/s ( 1 threads)
+      Neon:           vq:     f32: uniform32: 2.50E+05  239 MB/s ( 1 threads)
+      Neon:          std:     i32: uniform32: 2.50E+05   64 MB/s ( 1 threads)
+      Neon:         heap:     i32: uniform32: 2.50E+05   12 MB/s ( 1 threads)
+      Neon:           vq:     i32: uniform32: 2.50E+05  242 MB/s ( 1 threads)
+      Neon:          std:     i64: uniform32: 2.50E+05  126 MB/s ( 1 threads)
+      Neon:         heap:     i64: uniform32: 2.50E+05   25 MB/s ( 1 threads)
+      Neon:           vq:     i64: uniform32: 2.50E+05  237 MB/s ( 1 threads)
+      Neon:          std:    u128: uniform32: 2.50E+05  124 MB/s ( 1 threads)
+      Neon:         heap:    u128: uniform32: 2.50E+05   25 MB/s ( 1 threads)
+      Neon:           vq:    u128: uniform32: 2.50E+05  236 MB/s ( 1 threads)
+[       OK ] BenchSortGroup/BenchSort.BenchAllSort/Neon (13123 ms)
+[ RUN      ] BenchSortGroup/BenchSort.BenchAllSort/Emu128
+[       OK ] BenchSortGroup/BenchSort.BenchAllSort/Emu128 (0 ms)
+[----------] 6 tests from BenchSortGroup/BenchSort (19837 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (19837 ms total)
+[  PASSED  ] 6 tests.
+[root@ip-172-31-84-212 highway]# 
