@@ -21,12 +21,22 @@ sudo yum install glibc-static.aarch64
 go install github.com/bazelbuild/bazelisk@latest
 git clone https://github.com/google/highway
 cd highway
-CC=clang ~/go/bin/bazelisk build -c opt --copt=-march=armv8.2-a+sve hwy/contrib/sort:all
+CC=clang ~/go/bin/bazelisk build -c opt --copt=-march=armv8.2a+sve hwy/contrib/sort:all
 bazel-bin/hwy/contrib/sort/sort_test
 bazel-bin/hwy/contrib/sort/bench_sort
+bazel-bin/hwy/contrib/sort/bench_parallel
 
 graviton 2
 CC=clang ~/go/bin/bazelisk build -c opt --copt=-march=armv8.2a hwy/contrib/sort:all
+CC=clang ~/go/bin/bazelisk build -c opt --copt=-mcpu=neoverse-n1 hwy/contrib/sort:all
+
+
+
+apple m1
+CC=clang ~/go/bin/bazelisk build -c opt --copt=-mcpu=vortex hwy/contrib/sort:all
+CC=clang ~/go/bin/bazelisk build -c opt --copt=-mcpu=vortex+simd hwy/contrib/sort:all
+-mcpu=neoverse-n1 graviton2
+Graviton3	-mcpu=neoverse-512tvb
 
 gustavomaurizio@iMacM1 highway % bazel-bin/hwy/contrib/sort/bench_sort                                   
 Running main() from gmock_main.cc
@@ -112,3 +122,79 @@ Running main() from gmock_main.cc
 [==========] 6 tests from 1 test suite ran. (19837 ms total)
 [  PASSED  ] 6 tests.
 [root@ip-172-31-84-212 highway]# 
+
+
+gustavomaurizio@iMacM1 highway % bazel-bin/hwy/contrib/sort/bench_parallel                                           
+Running main() from gmock_main.cc
+[==========] Running 2 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 2 tests from BenchParallelGroup/BenchParallel
+[ RUN      ] BenchParallelGroup/BenchParallel.BenchParallel/Neon
+      Neon:           vq:     i64: uniform16: 1.00E+08  419 MB/s ( 1 threads)
+      Neon:           vq:     i64: uniform16: 1.00E+08  826 MB/s ( 2 threads)
+      Neon:           vq:     i64: uniform16: 1.00E+08 1089 MB/s ( 3 threads)
+      Neon:           vq:     i64: uniform16: 1.00E+08 1503 MB/s ( 4 threads)
+      Neon:           vq:     i64: uniform16: 1.00E+08 1349 MB/s ( 5 threads)
+      Neon:           vq:     i64: uniform16: 1.00E+08 1444 MB/s ( 6 threads)
+      Neon:           vq:     i64: uniform16: 1.00E+08 1189 MB/s ( 7 threads)
+[       OK ] BenchParallelGroup/BenchParallel.BenchParallel/Neon (19207 ms)
+[ RUN      ] BenchParallelGroup/BenchParallel.BenchParallel/Emu128
+[       OK ] BenchParallelGroup/BenchParallel.BenchParallel/Emu128 (0 ms)
+[----------] 2 tests from BenchParallelGroup/BenchParallel (19207 ms total)
+
+[----------] Global test environment tear-down
+[==========] 2 tests from 1 test suite ran. (19207 ms total)
+[  PASSED  ] 2 tests.
+gust
+
+[root@ip-172-31-91-79 highway]# bazel-bin/hwy/contrib/sort/bench_parallel
+Running main() from gmock_main.cc
+[==========] Running 5 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 5 tests from BenchParallelGroup/BenchParallel
+[ RUN      ] BenchParallelGroup/BenchParallel.BenchParallel/AVX3
+      AVX3:           vq:     i64: uniform16: 1.00E+08  762 MB/s ( 1 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 1435 MB/s ( 2 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 2032 MB/s ( 3 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 2542 MB/s ( 4 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 3006 MB/s ( 5 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 3385 MB/s ( 6 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 3704 MB/s ( 7 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 3977 MB/s ( 8 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 3859 MB/s ( 9 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 4071 MB/s (10 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 4226 MB/s (11 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 4385 MB/s (12 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 4496 MB/s (13 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 4505 MB/s (14 threads)
+      AVX3:           vq:     i64: uniform16: 1.00E+08 4513 MB/s (15 threads)
+[       OK ] BenchParallelGroup/BenchParallel.BenchParallel/AVX3 (26067 ms)
+[ RUN      ] BenchParallelGroup/BenchParallel.BenchParallel/AVX2
+      AVX2:           vq:     i64: uniform16: 1.00E+08  629 MB/s ( 1 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 1196 MB/s ( 2 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 1690 MB/s ( 3 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 2172 MB/s ( 4 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 2599 MB/s ( 5 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 2962 MB/s ( 6 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 3300 MB/s ( 7 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 3574 MB/s ( 8 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 3526 MB/s ( 9 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 3743 MB/s (10 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 3925 MB/s (11 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 4073 MB/s (12 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 4204 MB/s (13 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 4253 MB/s (14 threads)
+      AVX2:           vq:     i64: uniform16: 1.00E+08 4320 MB/s (15 threads)
+[       OK ] BenchParallelGroup/BenchParallel.BenchParallel/AVX2 (28816 ms)
+[ RUN      ] BenchParallelGroup/BenchParallel.BenchParallel/SSE4
+[       OK ] BenchParallelGroup/BenchParallel.BenchParallel/SSE4 (0 ms)
+[ RUN      ] BenchParallelGroup/BenchParallel.BenchParallel/SSSE3
+[       OK ] BenchParallelGroup/BenchParallel.BenchParallel/SSSE3 (0 ms)
+[ RUN      ] BenchParallelGroup/BenchParallel.BenchParallel/Emu128
+[       OK ] BenchParallelGroup/BenchParallel.BenchParallel/Emu128 (0 ms)
+[----------] 5 tests from BenchParallelGroup/BenchParallel (54883 ms total)
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 1 test suite ran. (54883 ms total)
+[  PASSED  ] 5 tests.
+[root@ip-172-31-91-79 highway]# 
